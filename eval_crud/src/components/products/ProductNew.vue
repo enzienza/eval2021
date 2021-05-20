@@ -11,35 +11,82 @@
       <div class="form text-left space-y-4">
         <div class="p-2 w-full">
           <label class="form-label">Product Name</label>
-          <input type="text" class="form-control" />
-          !-- <span class="msg-error">Category has to be selected</span>-->
+          <input
+            type="text"
+            class="form-control"
+            v-model="product.title"
+            :class="{ 'is-invalid': isSubmitted && $v.product.title.$error }"
+          />
+          <span
+            class="msg-error"
+            v-if="isSubmitted && !$v.product.title.required"
+          >
+            Title is required a minimum 2 length
+          </span>
         </div>
 
         <div class="flex flex-wrap">
           <div class="p-2 w-1/2">
             <label class="form-label">Category</label>
-            <p></p>
+            <select class="form-select">
+              <option
+                v-for="category in allCategories"
+                :value="category"
+                :key="category"
+              >
+                {{ category }}
+              </option>
+            </select>
             <!--            <span class="msg-error">Category has to be selected</span>-->
           </div>
 
           <div class="p-2 w-1/2">
             <label class="form-label">Price</label>
             <div class="form-group">
-              <input type="text" class="form-group-control" />
+              <input
+                type="text"
+                class="form-group-control"
+                v-model="product.price"
+                :class="{
+                  'is-invalid': isSubmitted && $v.product.price.$error,
+                }"
+              />
               <div class="form-group-text">€</div>
             </div>
+            <span
+              class="msg-error"
+              v-if="
+                isSubmitted &&
+                !$v.product.price.minLenght &&
+                !$v.product.price.integer
+              "
+            >
+              Price cannot be in negative
+            </span>
           </div>
         </div>
 
         <div class="p-2 w-full">
           <label class="form-label">Image (url)</label>
-          <input type="text" class="form-control" />
+          <input type="text" class="form-control" v-model="product.image" />
           <!--          <span class="msg-error">Image is required</span>-->
         </div>
 
         <div class="p-2 w-full">
           <label class="form-label">Description</label>
-          <textarea class="form-control"></textarea>
+          <textarea
+            class="form-control"
+            v-model="product.description"
+            :class="{
+              'is-invalid': isSubmitted && $v.product.description.$error,
+            }"
+          ></textarea>
+          <span
+            class="msg-error"
+            v-if="isSubmitted && !$v.product.description.maxLength"
+          >
+            Description is required a maximum 200 length
+          </span>
         </div>
 
         <div class="flex flex-wrap mt-5 justify-end">
@@ -47,7 +94,7 @@
             <button class="btn-cancel" @click="goBack">Cancel</button>
           </div>
           <div class="p-2 w-1/5">
-            <button class="btn-save">Save</button>
+            <button class="btn-save" @click="onSubmit">Save</button>
           </div>
         </div>
       </div>
@@ -70,14 +117,44 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
+import {
+  required,
+  integer,
+  minLength,
+  maxLength,
+} from "vuelidate/lib/validators";
+
 export default {
   name: "ProductNew",
   data() {
     return {
+      product: {
+        id: null,
+        title: "",
+        price: "",
+        category: "",
+        image: "",
+        description: "",
+      },
+      isSubmitted: false,
       submitted: false,
     };
   },
+  computed: {
+    ...mapGetters(["allCategories"]),
+  },
+  validations: {
+    product: {
+      title: { required, minLength: minLength(2) },
+      price: { integer: integer, minLenght: minLength(0) },
+      description: { maxLength: maxLength(200) },
+    },
+  },
+
   methods: {
+    ...mapActions(["fetchCategories", "addProduct"]),
+
     // Definir Route -------------------------------
     goBack() {
       this.$router.push({ name: "products-list" });
@@ -85,7 +162,32 @@ export default {
 
     newProduct() {
       this.submitted = false;
+      this.product = {};
     },
+
+    onSubmit() {
+      const product = {
+        title: this.product.title,
+        price: this.product.price,
+        category: this.product.category,
+        image: this.product.image,
+        description: this.product.description,
+      };
+      this.isSubmitted = true;
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      } else {
+        this.$store.dispatch("addProduct", product);
+        this.submitted = true;
+      }
+
+      console.log("new product", product);
+    },
+  },
+
+  created() {
+    this.$store.dispatch("fetchCategories");
   },
 };
 </script>
