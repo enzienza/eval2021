@@ -14,7 +14,7 @@
           </button>
 
           <div class="hidden md:block mx-auto text-gray-600">
-            Showing 1 to 10 of {{ "allProducts.length" }} entries
+            Showing 1 to 10 of {{ allProducts.length }} entries
           </div>
 
           <div class="box-filter">
@@ -44,32 +44,35 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="product in 4" :key="product.id">
-                <td class="w-40">
-                  <div class="flex justify-center">
-                    <img
-                      src=""
-                      alt=""
-                      class="rounded w-20 h-auto"
-                      width="50px"
-                      height="50px"
-                    />
-                  </div>
-                </td>
-                <td>{{}}</td>
-                <td class="w-40">{{}} €</td>
-                <td class="w-64">{{}}</td>
-                <td class="w-64">
-                  <div class="flex justify-center space-x-8">
-                    <router-link
-                      :to="{ name: 'product-edit', params: { id: product.id } }"
-                    >
-                      <button class="btn-edit">Edit</button>
-                    </router-link>
-                    <button class="btn-delete">Delete</button>
-                  </div>
-                </td>
-              </tr>
+            <tr v-for="product in allProducts" :key="product.id">
+              <td class="w-40">
+                <div class="flex justify-center">
+                  <img
+                          :src="product.image"
+                          :alt="product.title"
+                          class="rounded w-20 h-auto"
+                          width="50px" height="50px"
+                  />
+                </div>
+              </td>
+              <td>
+                {{ product.title }}
+              </td>
+              <td class="w-40">{{ product.price }} €</td>
+              <td class="w-64">{{ product.category }}</td>
+              <td class="w-64">
+                <div class="flex justify-center space-x-8">
+                  <router-link :to="{ name: 'product-edit', params: { id: product.id } }">
+                    <button class="btn-edit" @click="setActiveProduct(product)">
+                      Edit
+                    </button>
+                  </router-link>
+                  <button class="btn-delete" @click="deletedProduct(product.id)">
+                    Delete
+                  </button>
+                </div>
+              </td>
+            </tr>
             </tbody>
           </table>
         </div>
@@ -81,21 +84,41 @@
 </template>
 
 <script>
+  import {mapGetters, mapActions} from 'vuex'
 export default {
   name: "ProductList",
   data() {
-    return {};
+    return {
+      currentProduct: null
+    };
+  },
+  computed:{
+    ...mapGetters(["allProducts"])
   },
   methods: {
+    ...mapActions(["fetchProducts", "deleteProduct"]),
+
     // Definir Route -------------------------------
     logout() {
       this.$router.push({ name: "login" });
     },
+
     newProduct() {
       this.$router.push({ name: "product-create" });
     },
 
+    deletedProduct(id){
+      this.$store.commit("deleteProduct", id)
+      console.log("supprimer ", id)
+    },
 
+    setActiveProduct(product){
+      console.log(product)
+      this.currentProduct = product;
+    },
+  },
+  created() {
+    this.$store.dispatch("fetchProducts");
   },
 };
 </script>
