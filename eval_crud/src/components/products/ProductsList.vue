@@ -44,76 +44,120 @@
               </tr>
             </thead>
             <tbody>
-            <tr v-for="product in allProducts" :key="product.id">
-              <td class="w-40">
-                <div class="flex justify-center">
-                  <img
-                          :src="product.image"
-                          :alt="product.title"
-                          class="rounded w-20 h-auto"
-                          width="50px" height="50px"
-                  />
-                </div>
-              </td>
-              <td>
-                {{ product.title }}
-              </td>
-              <td class="w-40">{{ product.price }} €</td>
-              <td class="w-64">{{ product.category }}</td>
-              <td class="w-64">
-                <div class="flex justify-center space-x-8">
-                  <router-link :to="{ name: 'product-edit', params: { id: product.id } }">
-                    <button class="btn-edit" @click="setActiveProduct(product)">
-                      Edit
+              <tr v-for="product in allProducts" :key="product.id">
+                <td class="w-40">
+                  <div class="flex justify-center">
+                    <img
+                      :src="product.image"
+                      :alt="product.title"
+                      class="rounded w-20 h-auto"
+                      width="50px"
+                      height="50px"
+                    />
+                  </div>
+                </td>
+                <td>
+                  {{ product.title }}
+                </td>
+                <td class="w-40">{{ product.price }} €</td>
+                <td class="w-64">{{ product.category }}</td>
+                <td class="w-64">
+                  <div class="flex justify-center space-x-8">
+                    <router-link
+                      :to="{ name: 'product-edit', params: { id: product.id } }"
+                    >
+                      <button
+                        class="btn-edit"
+                        @click="setActiveProduct(product)"
+                      >
+                        Edit
+                      </button>
+                    </router-link>
+                    <button
+                      class="btn-delete"
+                      @click="setDeleteProduct(product)"
+                    >
+                      Delete
                     </button>
-                  </router-link>
-                  <button class="btn-delete" @click="deletedProduct(product.id)">
-                    Delete
-                  </button>
-                </div>
-              </td>
-            </tr>
+                  </div>
+                </td>
+              </tr>
             </tbody>
           </table>
         </div>
-      </div>
+        <!--<Pagination />-->
 
-      <!--<Pagination />-->
+        <div v-if="deleted">
+          <div>
+            <h4 class="text-2xl text-center">
+              Are you sure you want to delete this product?
+              {{ currentProduct.title }}
+            </h4>
+            <div class="flex flex-wrap mt-5 justify-center">
+              <div class="p-2 w-1/3">
+                <button class="btn-cancel" @click="noDeleted">No</button>
+              </div>
+              <div class="p-2 w-1/3">
+                <button
+                  class="btn-save"
+                  @click="deletedProduct(currentProduct.id)"
+                >
+                  Yes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-  import {mapGetters, mapActions} from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "ProductList",
   data() {
     return {
-      currentProduct: null
+      currentProduct: null,
+      deleted: false,
     };
   },
-  computed:{
-    ...mapGetters(["allProducts"])
+  computed: {
+    ...mapGetters(["allProducts"]),
   },
   methods: {
-    ...mapActions(["fetchProducts", "deleteProduct"]),
+    ...mapActions(["fetchProducts", "getProduct", "deleteProduct"]),
 
-    // Definir Route -------------------------------
+    // Definir Route ....................................
     logout() {
       this.$router.push({ name: "login" });
     },
 
+    // Add a new product ................................
     newProduct() {
       this.$router.push({ name: "product-create" });
     },
 
-    deletedProduct(id){
-      this.$store.commit("deleteProduct", id)
-      console.log("supprimer ", id)
+    // Delete the product selected ......................
+    setDeleteProduct(product, id) {
+      this.product = this.$store.dispatch("getProduct", id);
+      this.currentProduct = product;
+      this.deleted = true;
+      console.log("product selected is ", this.getProduct);
+    },
+    deletedProduct(id) {
+      this.$store.commit("deleteProduct", id);
+      console.log("supprimer ", id);
+      this.deleted = false;
+    },
+    noDeleted() {
+      this.deleted = false;
     },
 
-    setActiveProduct(product){
-      console.log(product)
+    // Display the product selected .....................
+    setActiveProduct(product) {
+      console.log(product);
       this.currentProduct = product;
     },
   },

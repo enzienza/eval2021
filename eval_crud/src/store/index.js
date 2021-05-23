@@ -3,7 +3,6 @@ import Vue from "vue";
 import Vuex from "vuex";
 import axios from "axios";
 
-// Component Dependencies ==========================
 // TO HANDEL STATE..................................
 const state = {
   products: [],
@@ -23,7 +22,7 @@ const actions = {
     axios
       .get("https://fakestoreapi.com/products")
       .then((res) => {
-        commit("setProduct", res.data);
+        commit("setProducts", res.data);
       })
       .catch((e) => {
         console.log("Erreur request fetch Product", e.data);
@@ -51,6 +50,18 @@ const actions = {
       })
       .catch((e) => {
         console.log("Error request Add Product", e.data);
+      });
+  },
+
+  /* --- Display the product selected --- */
+  getProduct({ commit }, id) {
+    axios
+      .get(`https://fakestoreapi.com/products/${id}`)
+      .then((res) => {
+        commit("productID", res.data);
+      })
+      .catch((e) => {
+        console.log("Error request get Product", e.data);
       });
   },
 
@@ -85,7 +96,7 @@ const actions = {
 // TO HANDEL MUTATIONS..............................
 const mutations = {
   /* --- Display all products --- */
-  setProduct(state, products) {
+  setProducts(state, products) {
     state.products = products;
   },
 
@@ -97,6 +108,11 @@ const mutations = {
   /* --- Adding a New Product --- */
   newProduct(state, product) {
     state.products.unshift(product);
+  },
+
+  /* --- Display the product selected --- */
+  productID(state, id) {
+    state.products = state.products.filter((product) => product.id === id);
   },
 
   /* --- Edit the product selected --- */
