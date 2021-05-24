@@ -15,6 +15,7 @@
             type="text"
             class="form-control"
             v-model="product.title"
+            placeholder="Enter product name"
             :class="{ 'is-invalid': isSubmitted && $v.product.title.$error }"
           />
           <span
@@ -37,7 +38,6 @@
                 {{ category }}
               </option>
             </select>
-            <!--            <span class="msg-error">Category has to be selected</span>-->
           </div>
 
           <div class="p-2 w-1/2">
@@ -47,6 +47,7 @@
                 type="text"
                 class="form-group-control"
                 v-model="product.price"
+                placeholder="Enter product price"
                 :class="{
                   'is-invalid': isSubmitted && $v.product.price.$error,
                 }"
@@ -55,11 +56,7 @@
             </div>
             <span
               class="msg-error"
-              v-if="
-                isSubmitted &&
-                !$v.product.price.minLenght &&
-                !$v.product.price.integer
-              "
+              v-if="isSubmitted && !$v.product.price.minLenght"
             >
               Price cannot be in negative
             </span>
@@ -68,8 +65,12 @@
 
         <div class="p-2 w-full">
           <label class="form-label">Image (url)</label>
-          <input type="text" class="form-control" v-model="product.image" />
-          <!--          <span class="msg-error">Image is required</span>-->
+          <input
+            type="text"
+            class="form-control"
+            v-model="product.image"
+            placeholder="Enter product image url"
+          />
         </div>
 
         <div class="p-2 w-full">
@@ -77,6 +78,7 @@
           <textarea
             class="form-control"
             v-model="product.description"
+            placeholder="Enter product description"
             :class="{
               'is-invalid': isSubmitted && $v.product.description.$error,
             }"
@@ -118,12 +120,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-import {
-  required,
-  integer,
-  minLength,
-  maxLength,
-} from "vuelidate/lib/validators";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default {
   name: "ProductNew",
@@ -147,7 +144,7 @@ export default {
   validations: {
     product: {
       title: { required, minLength: minLength(2) },
-      price: { integer: integer, minLenght: minLength(0) },
+      price: { minLenght: minLength(0) },
       description: { maxLength: maxLength(200) },
     },
   },

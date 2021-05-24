@@ -59,7 +59,7 @@
                 <td>
                   {{ product.title }}
                 </td>
-                <td class="w-40">{{ product.price }} €</td>
+                <td class="w-40">{{ product.price.toFixed(2) }} €</td>
                 <td class="w-64">{{ product.category }}</td>
                 <td class="w-64">
                   <div class="flex justify-center space-x-8">
@@ -89,17 +89,20 @@
 
         <div v-if="deleted">
           <div>
-            <h4 class="text-2xl text-center">
-              Are you sure you want to delete this product?
-              {{ currentProduct.title }}
-            </h4>
+            <div class="text-center">
+              <h4 class="text-2xl ">Please confirm</h4>
+              <p class="text-lg">
+                Please confirm that you want to delete product
+              </p>
+              <p>{{currentProduct.title}}</p>
+            </div>
             <div class="flex flex-wrap mt-5 justify-center">
               <div class="p-2 w-1/3">
                 <button class="btn-cancel" @click="noDeleted">No</button>
               </div>
               <div class="p-2 w-1/3">
                 <button
-                  class="btn-save"
+                  class="btn-delete"
                   @click="deletedProduct(currentProduct.id)"
                 >
                   Yes
