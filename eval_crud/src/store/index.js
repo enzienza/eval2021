@@ -7,12 +7,14 @@ import axios from "axios";
 const state = {
   products: [],
   categories: [],
+  product: null,
 };
 
 // TO HANDEL STATE..................................
 const getters = {
   allProducts: (state) => state.products,
   allCategories: (state) => state.categories,
+  product: (state) => state.product,
 };
 
 // TO HANDEL ACTIONS................................
@@ -111,8 +113,9 @@ const mutations = {
   },
 
   /* --- Display the product selected --- */
-  productID(state, id) {
-    state.products = state.products.filter((product) => product.id === id);
+  productID(state, product /* id */) {
+    //state.products = state.products.filter((product) => product.id === id);
+    state.product = product;
   },
 
   /* --- Edit the product selected --- */
