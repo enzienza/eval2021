@@ -44,27 +44,30 @@
             <thead>
               <tr>
                 <th>Image</th>
-                <th>
-                  <div class="flex justify-center items-center">
-                    <span>Product Name</span>
-                    <div class="pl-3 space-y-0">
-                      <button class="block" @click="setOrderDirection('asc')">
-                        <IconSortUp class="btn-filter" />
-                      </button>
-                      <button class="block" @click="setOrderDirection('desc')">
-                        <IconSortDown class="btn-filter" />
-                      </button>
-                    </div>
-                  </div>
+                <th
+                  @click="sort('title')"
+                  :class="[sortBy === 'title' ? sortDirection : '']"
+                >
+                  Product Name
                 </th>
-                <th>Price</th>
-                <th>Category</th>
+                <th
+                  @click="sort('price')"
+                  :class="[sortBy === 'price' ? sortDirection : '']"
+                >
+                  Price
+                </th>
+                <th
+                  @click="sort('category')"
+                  :class="[sortBy === 'category' ? sortDirection : '']"
+                >
+                  Category
+                </th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
               <!-- START item product -->
-              <tr v-for="product in filteredProducts" :key="product.id">
+              <tr v-for="product in sortedProducts" :key="product.id">
                 <td class="w-40">
                   <div class="flex justify-center">
                     <img
@@ -157,15 +160,11 @@ import IconPencil from "../icons/IconPencil";
 import IconDelete from "../icons/IconDelete";
 import IconSearch from "../icons/IconSearch";
 //import Pagination from "../pagination/Pagination";
-import IconSortUp from "../icons/IconSortUp";
-import IconSortDown from "../icons/IconSortDown";
 
 // Export vue =====================================
 export default {
   name: "ProductList",
   components: {
-    IconSortDown,
-    IconSortUp,
     //Pagination,
     IconSearch,
     IconDelete,
@@ -176,6 +175,8 @@ export default {
       currentProduct: null,
       deleted: false,
       search: "",
+      sortBy: this.product,
+      sortDirection: "desc",
     };
   },
   computed: {
@@ -189,17 +190,15 @@ export default {
       });
     },
 
-    orderBy: {
-      set(orderBy) {
-        this.$store.dispatch("sortOrderBy", orderBy);
-      },
-      get() {
-        return this.$store.getters.getOrderBy;
-      },
-    },
-
-    orderDirection() {
-      return this.$store.getters.getOrderDirection;
+    // Order Asc / Desc ..................................
+    sortedProducts() {
+      return this.filteredProducts.concat().sort((p1, p2) => {
+        let modif = 1;
+        if (this.sortDirection === "desc") modif = -1;
+        if (p1[this.sortBy] < p2[this.sortBy]) return -1 * modif;
+        if (p1[this.sortBy] > p2[this.sortBy]) return 1 * modif;
+        return 0;
+      });
     },
   },
   methods: {
@@ -214,11 +213,6 @@ export default {
     logout() {
       localStorage.clear();
       this.$router.push({ name: "login" });
-    },
-
-    clickPage(e) {
-      console.log("d", e);
-      this.$store.dispatch("fetchPages", e.target.value);
     },
 
     // Add a new product ................................
@@ -248,25 +242,26 @@ export default {
       this.currentProduct = product;
     },
 
-    setOrderDirection(direction) {
-      this.$store.dispatch("sortOrderDirection", direction);
-      console.log("direction : ", direction);
+    // Pagination ........................................
+    // clickPage(e) {
+    //   console.log("d", e);
+    //   this.$store.dispatch("fetchPages", e.target.value);
+    // },
+
+    // Order Asc / Desc ..................................
+    sort(s) {
+      if (s === this.sortBy) {
+        this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+      }
+      this.sortBy = s;
+      console.log("sort by: ", (this.sortBy = s));
+      console.log("direction: ", this.sortDirection);
     },
   },
   created() {
     this.$store.dispatch("fetchProducts");
     this.$store.dispatch("fetchPages");
   },
-
-  // watch: {
-  //   "pagination.currentPage": {
-  //     handler(page) {
-  //       console.log("currentPage");
-  //       this.fetchProducts();
-  //     },
-  //     immediate: true,
-  //   },
-  // },
 };
 </script>
 
@@ -363,5 +358,13 @@ tr:nth-child(even) {
   &-footer {
     @apply ml-auto mb-4 flex;
   }
+}
+
+.asc:after {
+  content: "\25B2";
+}
+
+.desc:after {
+  content: "\25BC";
 }
 </style>

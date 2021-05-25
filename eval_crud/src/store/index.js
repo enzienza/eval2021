@@ -10,8 +10,6 @@ const state = {
   categories: [],
   categoryApiURL: "https://fakestoreapi.com/products/categories",
   product: null,
-  orderBy: "",
-  orderDirection: "asc",
   pagination: {
     page: 0,
     currentPage: 1,
@@ -29,12 +27,6 @@ const getters = {
 
   // Get the product
   product: (state) => state.product,
-
-  // Get the order by filter
-  getOrderBy: (state) => state.orderBy,
-
-  // Get the order direction filter
-  getOrderDirection: (state) => state.orderDirection,
 
   // Get the current Page
   getPages: (state) => state.pages,
@@ -65,6 +57,7 @@ const actions = {
     //   });
   },
 
+  /* --- pagination --- */
   fetchPages({ commit, dispatch }, page) {
     commit("setCurrentPage", page);
     dispatch("fetchProducts");
@@ -129,24 +122,6 @@ const actions = {
         console.log("Error request remove product", e.date);
       });
   },
-
-  /* --- Filter Order Asc / Desc --- */
-  sortOrderBy({ commit }, payload) {
-    commit("setOrderBy", payload);
-  },
-
-  sortOrderDirection({ commit, state }) {
-    axios
-      .get(`${state.productApiURL}?sort=${state.orderDirection}`)
-      .then((res) => {
-        commit("setOrderDirection", res.data);
-      })
-      .catch((e) => {
-        console.log("Eror request sortOrderDirection", e.data);
-      });
-  },
-
-  /* --- pagination --- */
 };
 
 // TO HANDEL MUTATIONS..............................
@@ -156,6 +131,7 @@ const mutations = {
     state.products = products;
   },
 
+  /* --- pagination --- */
   setPages(state, pages) {
     state.pagination.pages = pages;
   },
@@ -193,14 +169,6 @@ const mutations = {
   /* --- Deleted Product selected --- */
   deleteProduct(state, id) {
     state.products = state.products.filter((product) => product.id !== id);
-  },
-
-  /* --- Filter Order Asc / Desc --- */
-  setOrderBy(state, orderBy) {
-    state.orderBy = orderBy;
-  },
-  setOrderDirection(state, orderDirection) {
-    state.orderDirection = orderDirection;
   },
 };
 
