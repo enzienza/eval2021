@@ -28,7 +28,12 @@
           </div>
 
           <div class="flex w-56 relative text-gray-700 dark:text-gray-300">
-            <input type="text" placeholder="Search..." class="form-search" />
+            <input
+              type="text"
+              placeholder="Search..."
+              class="form-search"
+              v-model="search"
+            />
             <IconSearch />
           </div>
         </div>
@@ -46,7 +51,7 @@
             </thead>
             <tbody>
               <!-- START item product -->
-              <tr v-for="product in allProducts" :key="product.id">
+              <tr v-for="product in filteredProducts" :key="product.id">
                 <td class="w-40">
                   <div class="flex justify-center">
                     <img
@@ -143,15 +148,23 @@ import Pagination from "../pagination/Pagination";
 // Export vue =====================================
 export default {
   name: "ProductList",
-  components: {Pagination, IconSearch, IconDelete, IconPencil },
+  components: { Pagination, IconSearch, IconDelete, IconPencil },
   data() {
     return {
       currentProduct: null,
       deleted: false,
+      search: "",
     };
   },
   computed: {
     ...mapGetters(["allProducts"]),
+
+    // filter Search ....................................
+    filteredProducts() {
+      return this.allProducts.filter((product) => {
+        return product.title.match(this.search);
+      });
+    },
   },
   methods: {
     ...mapActions(["fetchProducts", "getProduct", "deleteProduct"]),

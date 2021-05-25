@@ -39,7 +39,6 @@
                 {{ category }}
               </option>
             </select>
-            <!--            <span class="msg-error">Category has to be selected</span>-->
           </div>
 
           <div class="p-2 w-1/2">
@@ -73,7 +72,6 @@
             class="form-control"
             placeholder="Enter product image url"
           />
-          <!--          <span class="msg-error">Image is required</span>-->
         </div>
 
         <div class="p-2 w-full">

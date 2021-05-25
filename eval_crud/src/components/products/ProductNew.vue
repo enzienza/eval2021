@@ -102,6 +102,7 @@
       </div>
     </div>
 
+    <!-- START card submitted true -->
     <div v-else class="card">
       <div>
         <h4 class="text-2xl text-center">You submitted successfully !</h4>
@@ -115,6 +116,7 @@
         </div>
       </div>
     </div>
+    <!-- END card submitted true -->
   </div>
 </template>
 
