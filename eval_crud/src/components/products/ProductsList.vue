@@ -14,7 +14,8 @@
           </button>
 
           <div class="hidden md:block mx-auto text-gray-600">
-            Showing 1 to 10 of {{ allProducts.length }} entries
+            Showing {{ pagination.currentPage }} to {{ pagination.perPage }} of
+            {{ allProducts.length }} entries
           </div>
 
           <!--          <div class="box-filter">-->
@@ -44,7 +45,17 @@
               <tr>
                 <th>Image</th>
                 <th>
-                  product name
+                  <div class="flex justify-center items-center">
+                    <span>Product Name</span>
+                    <div class="pl-3 space-y-0">
+                      <button class="block" @click="setOrderDirection('asc')">
+                        <IconSortUp class="btn-filter" />
+                      </button>
+                      <button class="block" @click="setOrderDirection('desc')">
+                        <IconSortDown class="btn-filter" />
+                      </button>
+                    </div>
+                  </div>
                 </th>
                 <th>Price</th>
                 <th>Category</th>
@@ -98,7 +109,7 @@
           </table>
         </div>
         <!-- START pagination -->
-        <Pagination />
+        <!--        <Pagination />-->
         <!-- END pagination -->
 
         <!-- START model deleted -->
@@ -140,19 +151,22 @@
 
 <script>
 // Import element Store ===========================
-import { mapGetters, mapActions } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 // Import components ==============================
 import IconPencil from "../icons/IconPencil";
 import IconDelete from "../icons/IconDelete";
 import IconSearch from "../icons/IconSearch";
-import Pagination from "../pagination/Pagination";
-
+//import Pagination from "../pagination/Pagination";
+import IconSortUp from "../icons/IconSortUp";
+import IconSortDown from "../icons/IconSortDown";
 
 // Export vue =====================================
 export default {
   name: "ProductList",
   components: {
-    Pagination,
+    IconSortDown,
+    IconSortUp,
+    //Pagination,
     IconSearch,
     IconDelete,
     IconPencil,
@@ -165,7 +179,8 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["allProducts"]),
+    ...mapState(["pagination"]),
+    ...mapGetters(["allProducts", "getPages"]),
 
     // filter Search ....................................
     filteredProducts() {
@@ -174,15 +189,36 @@ export default {
       });
     },
 
+    orderBy: {
+      set(orderBy) {
+        this.$store.dispatch("sortOrderBy", orderBy);
+      },
+      get() {
+        return this.$store.getters.getOrderBy;
+      },
+    },
 
+    orderDirection() {
+      return this.$store.getters.getOrderDirection;
+    },
   },
   methods: {
-    ...mapActions(["fetchProducts", "getProduct", "deleteProduct"]),
+    ...mapActions([
+      "fetchProducts",
+      "fetchPages",
+      "getProduct",
+      "deleteProduct",
+    ]),
 
     // Definir Route ....................................
     logout() {
       localStorage.clear();
       this.$router.push({ name: "login" });
+    },
+
+    clickPage(e) {
+      console.log("d", e);
+      this.$store.dispatch("fetchPages", e.target.value);
     },
 
     // Add a new product ................................
@@ -211,10 +247,26 @@ export default {
       console.log(product);
       this.currentProduct = product;
     },
+
+    setOrderDirection(direction) {
+      this.$store.dispatch("sortOrderDirection", direction);
+      console.log("direction : ", direction);
+    },
   },
   created() {
     this.$store.dispatch("fetchProducts");
+    this.$store.dispatch("fetchPages");
   },
+
+  // watch: {
+  //   "pagination.currentPage": {
+  //     handler(page) {
+  //       console.log("currentPage");
+  //       this.fetchProducts();
+  //     },
+  //     immediate: true,
+  //   },
+  // },
 };
 </script>
 
@@ -256,6 +308,9 @@ export default {
   &-filter {
     @apply w-4 h-4 text-gray-400;
     &:hover {
+      @apply text-gray-800;
+    }
+    .active {
       @apply text-gray-800;
     }
   }

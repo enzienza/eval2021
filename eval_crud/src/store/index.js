@@ -6,35 +6,74 @@ import axios from "axios";
 // TO HANDEL STATE..................................
 const state = {
   products: [],
+  productApiURL: "https://fakestoreapi.com/products",
   categories: [],
+  categoryApiURL: "https://fakestoreapi.com/products/categories",
   product: null,
+  orderBy: "",
+  orderDirection: "asc",
+  pagination: {
+    page: 0,
+    currentPage: 1,
+    perPage: 5,
+  },
 };
 
 // TO HANDEL STATE..................................
 const getters = {
+  // Get all products
   allProducts: (state) => state.products,
+
+  // Get all categories
   allCategories: (state) => state.categories,
+
+  // Get the product
   product: (state) => state.product,
+
+  // Get the order by filter
+  getOrderBy: (state) => state.orderBy,
+
+  // Get the order direction filter
+  getOrderDirection: (state) => state.orderDirection,
+
+  // Get the current Page
+  getPages: (state) => state.pages,
 };
 
 // TO HANDEL ACTIONS................................
 const actions = {
   /* --- Display all products --- */
-  fetchProducts({ commit }) {
+  fetchProducts({ commit, state }) {
     axios
-      .get("https://fakestoreapi.com/products")
+      .get(
+        `${state.productApiURL}?_page=${state.pagination.currentPage}&_limit=${state.pagination.perPage}`
+      )
       .then((res) => {
         commit("setProducts", res.data);
+        commit("setPages", res.headers["x-total-count"]);
       })
       .catch((e) => {
         console.log("Erreur request fetch Product", e.data);
       });
+    // axios
+    //   .get(`${state.productApiURL}`)
+    //   .then((res) => {
+    //     commit("setProducts", res.data);
+    //   })
+    //   .catch((e) => {
+    //     console.log("Erreur request fetch Product", e.data);
+    //   });
+  },
+
+  fetchPages({ commit, dispatch }, page) {
+    commit("setCurrentPage", page);
+    dispatch("fetchProducts");
   },
 
   /* --- Display all categories --- */
-  fetchCategories({ commit }) {
+  fetchCategories({ commit, state }) {
     axios
-      .get("https://fakestoreapi.com/products/categories")
+      .get(`${state.categoryApiURL}`)
       .then((res) => {
         commit("setCategories", res.data);
       })
@@ -44,9 +83,9 @@ const actions = {
   },
 
   /* --- Adding a New Product --- */
-  addProduct({ commit }, product) {
+  addProduct({ commit, state }, product) {
     axios
-      .post("https://fakestoreapi.com/products", product)
+      .post(`${state.productApiURL}`, product)
       .then((res) => {
         commit("newProduct", res.data);
       })
@@ -56,9 +95,9 @@ const actions = {
   },
 
   /* --- Display the product selected --- */
-  getProduct({ commit }, id) {
+  getProduct({ commit, state }, id) {
     axios
-      .get(`https://fakestoreapi.com/products/${id}`)
+      .get(`${state.productApiURL}/${id}`)
       .then((res) => {
         commit("productID", res.data);
       })
@@ -68,12 +107,9 @@ const actions = {
   },
 
   /* --- Edit the product selected --- */
-  updateProduct({ commit }, updatedProduct) {
+  updateProduct({ commit, state }, updatedProduct) {
     axios
-      .put(
-        `https://fakestoreapi.com/products/${updatedProduct.id}`,
-        updatedProduct
-      )
+      .put(`${state.productApiURL}/${updatedProduct.id}`, updatedProduct)
       .then((res) => {
         commit("editProduct", res.data);
       })
@@ -83,9 +119,9 @@ const actions = {
   },
 
   /* --- Deleted Product selected --- */
-  removeProduct({ commit }, id) {
+  removeProduct({ commit, state }, id) {
     axios
-      .delete(`https://fakestoreapi.com/products/${id}`)
+      .delete(`${state.productApiURL}/${id}`)
       .then((res) => {
         commit("deleteProduct", res.data);
       })
@@ -93,6 +129,24 @@ const actions = {
         console.log("Error request remove product", e.date);
       });
   },
+
+  /* --- Filter Order Asc / Desc --- */
+  sortOrderBy({ commit }, payload) {
+    commit("setOrderBy", payload);
+  },
+
+  sortOrderDirection({ commit, state }) {
+    axios
+      .get(`${state.productApiURL}?sort=${state.orderDirection}`)
+      .then((res) => {
+        commit("setOrderDirection", res.data);
+      })
+      .catch((e) => {
+        console.log("Eror request sortOrderDirection", e.data);
+      });
+  },
+
+  /* --- pagination --- */
 };
 
 // TO HANDEL MUTATIONS..............................
@@ -100,6 +154,14 @@ const mutations = {
   /* --- Display all products --- */
   setProducts(state, products) {
     state.products = products;
+  },
+
+  setPages(state, pages) {
+    state.pagination.pages = pages;
+  },
+
+  setCurrentPage(state, currentPage) {
+    state.pagination.currentPage = currentPage;
   },
 
   /* --- Display all categories --- */
@@ -131,6 +193,14 @@ const mutations = {
   /* --- Deleted Product selected --- */
   deleteProduct(state, id) {
     state.products = state.products.filter((product) => product.id !== id);
+  },
+
+  /* --- Filter Order Asc / Desc --- */
+  setOrderBy(state, orderBy) {
+    state.orderBy = orderBy;
+  },
+  setOrderDirection(state, orderDirection) {
+    state.orderDirection = orderDirection;
   },
 };
 
