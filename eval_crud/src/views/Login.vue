@@ -30,19 +30,27 @@
 </template>
 
 <script>
+const email = "test@test.be";
+const password = "test";
 export default {
   name: "Login",
   data() {
     return {
       user: {
-        email: "",
-        password: "",
+        email: "test@test.be",
+        password: "test",
       },
     };
   },
   methods: {
     login() {
-      this.$router.push({ name: "products-list" });
+      const currentEmail = this.user.email;
+      const currentPassword = this.user.password;
+
+      if (email === currentEmail && password === currentPassword) {
+        localStorage.connected = "true";
+        this.$router.push({ name: "products-list" });
+      }
     },
   },
 };

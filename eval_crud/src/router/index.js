@@ -13,11 +13,17 @@ const routes = [
     path: "/",
     name: "login",
     component: Login,
+    beforeEnter:(to,from,next) => {
+      localStorage.connected && localStorage.connected === 'true' ? next({name:'products-list'}) : next()
+    },
   },
   {
     path: "/products",
     name: "product",
     component: Products,
+    beforeEnter:(to,from,next) => {
+      localStorage.connected && localStorage.connected === 'true' ? next() : next({name:'login'})
+    },
     children:[
       {
         path: "",
@@ -34,7 +40,7 @@ const routes = [
         name: "product-edit",
         component: ProductEdit
       }
-    ]
+    ],
   },
 ];
 

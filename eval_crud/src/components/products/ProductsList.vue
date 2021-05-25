@@ -17,15 +17,15 @@
             Showing 1 to 10 of {{ allProducts.length }} entries
           </div>
 
-          <div class="box-filter">
-            <p class="flex">Filter</p>
-            <span class="text-gray-200 cursor-pointer hover:text-gray-700">
-              ASC
-            </span>
-            <span class="text-gray-200 cursor-pointer hover:text-gray-700">
-              DESC
-            </span>
-          </div>
+          <!--          <div class="box-filter">-->
+          <!--            <p class="flex">Filter</p>-->
+          <!--            <span class="text-gray-200 cursor-pointer hover:text-gray-700">-->
+          <!--              ASC-->
+          <!--            </span>-->
+          <!--            <span class="text-gray-200 cursor-pointer hover:text-gray-700">-->
+          <!--              DESC-->
+          <!--            </span>-->
+          <!--          </div>-->
 
           <div class="flex w-56 relative text-gray-700 dark:text-gray-300">
             <input
@@ -43,7 +43,9 @@
             <thead>
               <tr>
                 <th>Image</th>
-                <th>Product Name</th>
+                <th>
+                  product name
+                </th>
                 <th>Price</th>
                 <th>Category</th>
                 <th>Actions</th>
@@ -145,10 +147,16 @@ import IconDelete from "../icons/IconDelete";
 import IconSearch from "../icons/IconSearch";
 import Pagination from "../pagination/Pagination";
 
+
 // Export vue =====================================
 export default {
   name: "ProductList",
-  components: { Pagination, IconSearch, IconDelete, IconPencil },
+  components: {
+    Pagination,
+    IconSearch,
+    IconDelete,
+    IconPencil,
+  },
   data() {
     return {
       currentProduct: null,
@@ -165,12 +173,15 @@ export default {
         return product.title.match(this.search);
       });
     },
+
+
   },
   methods: {
     ...mapActions(["fetchProducts", "getProduct", "deleteProduct"]),
 
     // Definir Route ....................................
     logout() {
+      localStorage.clear();
       this.$router.push({ name: "login" });
     },
 
@@ -240,6 +251,12 @@ export default {
     }
     &:focus {
       @apply outline-none;
+    }
+  }
+  &-filter {
+    @apply w-4 h-4 text-gray-400;
+    &:hover {
+      @apply text-gray-800;
     }
   }
 }
