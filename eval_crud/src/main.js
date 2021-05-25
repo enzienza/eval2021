@@ -6,6 +6,8 @@ import store from "./store";
 import Vuelidate from "vuelidate";
 Vue.use(Vuelidate);
 
+import "./assets/style/index.css"
+
 Vue.config.productionTip = false;
 
 new Vue({
