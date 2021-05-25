@@ -44,23 +44,26 @@
             <thead>
               <tr>
                 <th>Image</th>
-                <th
-                  @click="sort('title')"
-                  :class="[sortBy === 'title' ? sortDirection : '']"
-                >
+                <th @click="sort('title')">
                   Product Name
+                  <button
+                    class="asc"
+                    :class="[sortBy === 'title' ? sortDirection : 'desc']"
+                  ></button>
                 </th>
-                <th
-                  @click="sort('price')"
-                  :class="[sortBy === 'price' ? sortDirection : '']"
-                >
+                <th @click="sort('price')">
                   Price
+                  <button
+                    class="asc"
+                    :class="[sortBy === 'price' ? sortDirection : 'desc']"
+                  ></button>
                 </th>
-                <th
-                  @click="sort('category')"
-                  :class="[sortBy === 'category' ? sortDirection : '']"
-                >
+                <th @click="sort('category')">
                   Category
+                  <button
+                    class="asc"
+                    :class="[sortBy === 'category' ? sortDirection : 'desc']"
+                  ></button>
                 </th>
                 <th>Actions</th>
               </tr>
@@ -175,7 +178,7 @@ export default {
       currentProduct: null,
       deleted: false,
       search: "",
-      sortBy: this.product,
+      sortBy: "",
       sortDirection: "desc",
     };
   },
@@ -193,10 +196,10 @@ export default {
     // Order Asc / Desc ..................................
     sortedProducts() {
       return this.filteredProducts.concat().sort((p1, p2) => {
-        let modif = 1;
-        if (this.sortDirection === "desc") modif = -1;
-        if (p1[this.sortBy] < p2[this.sortBy]) return -1 * modif;
-        if (p1[this.sortBy] > p2[this.sortBy]) return 1 * modif;
+        let payload = 1;
+        if (this.sortDirection === "desc") payload = -1;
+        if (p1[this.sortBy] < p2[this.sortBy]) return -1 * payload;
+        if (p1[this.sortBy] > p2[this.sortBy]) return 1 * payload;
         return 0;
       });
     },
@@ -254,8 +257,6 @@ export default {
         this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
       }
       this.sortBy = s;
-      console.log("sort by: ", (this.sortBy = s));
-      console.log("direction: ", this.sortDirection);
     },
   },
   created() {
@@ -362,9 +363,17 @@ tr:nth-child(even) {
 
 .asc:after {
   content: "\25B2";
+  @apply text-gray-500;
+  &:hover {
+    @apply text-gray-600;
+  }
 }
 
 .desc:after {
   content: "\25BC";
+  @apply text-gray-500;
+  &:hover {
+    @apply text-gray-600;
+  }
 }
 </style>
