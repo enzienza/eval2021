@@ -1,15 +1,13 @@
 <template>
-    <div class="container">
-        <router-view />
-    </div>
+  <div class="container mx-auto mb-10 mb-auto">
+    <router-view />
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "Products"
-    }
+export default {
+  name: "Products",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped lang="scss"></style>

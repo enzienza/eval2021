@@ -1,8 +1,14 @@
 <template>
-  <div id="app">
+  <div id="app" class="h-screen flex flex-col justify-between">
     <router-view />
+    <div class="bg-gray-800">
+      <div class="container mx-auto py-4 px-5 flex flex-wrap flex-col">
+        <p class="text-white opacity-50 text-sm text-left">
+          © 2021 Enza Lombardo
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
-<style lang="scss">
-</style>
+<style scoped lang="scss"></style>

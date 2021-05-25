@@ -189,4 +189,67 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.btn {
+  &-back {
+    @apply px-4 py-3 text-white font-semibold  bg-gray-700 rounded;
+    &:hover {
+      @apply bg-gray-600;
+    }
+  }
+  &-cancel {
+    @apply w-full px-6 py-3 mt-3 text-lg mr-5 transition-all duration-150 ease-linear rounded-lg shadow outline-none;
+    &:hover {
+      @apply shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+  &-save {
+    @apply w-full px-6 py-3 mt-3 text-lg text-white transition-all duration-150 ease-linear rounded-lg shadow outline-none bg-purple-500;
+    &:hover {
+      @apply bg-purple-600 shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+}
+
+.card {
+  @apply w-1/2 bg-white shadow-xl p-10 rounded-md mx-auto mb-10;
+}
+
+.form {
+  &-label {
+    @apply leading-7 text-sm text-gray-600;
+  }
+  &-control {
+    @apply w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out;
+    &:focus {
+      @apply border-indigo-500 bg-white ring-2 ring-indigo-200;
+    }
+  }
+  &-select {
+    @apply w-full py-2 px-3 bg-gray-100 bg-opacity-50 rounded border border-gray-300 text-base outline-none text-gray-700  leading-8 transition-colors duration-200 ease-in-out;
+  }
+
+  &-group {
+    @apply flex items-center;
+    &-control {
+      @apply w-full py-1 px-3 bg-gray-100 rounded-tl rounded-bl text-base border outline-none text-gray-700 bg-opacity-50 leading-8 transition-colors duration-200 ease-in-out;
+      &:focus {
+        @apply border-indigo-500 bg-white ring-2 ring-indigo-200;
+      }
+    }
+    &-text {
+      @apply bg-gray-200 py-2 px-4 font-bold  border rounded-tr rounded-br;
+    }
+  }
+
+  .msg-error {
+    @apply text-sm text-red-600;
+  }
+}
+</style>

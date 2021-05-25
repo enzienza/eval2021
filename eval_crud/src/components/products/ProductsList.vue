@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div>
-      <button @click="logout">Log out</button>
+    <div class="flex px-4 py-6 items-center justify-end">
+      <button class="btn-logout" @click="logout">Deconnection</button>
     </div>
     <div>
       <div class="flex mb-6">
@@ -29,6 +29,7 @@
 
           <div class="flex w-56 relative text-gray-700 dark:text-gray-300">
             <input type="text" placeholder="Search..." class="form-search" />
+            <IconSearch />
           </div>
         </div>
 
@@ -44,6 +45,7 @@
               </tr>
             </thead>
             <tbody>
+              <!-- START item product -->
               <tr v-for="product in allProducts" :key="product.id">
                 <td class="w-40">
                   <div class="flex justify-center">
@@ -67,59 +69,81 @@
                       :to="{ name: 'product-edit', params: { id: product.id } }"
                     >
                       <button
-                        class="btn-edit"
+                        class="txt-edit"
                         @click="setActiveProduct(product)"
                       >
+                        <IconPencil />
                         Edit
                       </button>
                     </router-link>
                     <button
-                      class="btn-delete"
+                      class="txt-delete"
                       @click="setDeleteProduct(product)"
                     >
+                      <IconDelete />
                       Delete
                     </button>
                   </div>
                 </td>
               </tr>
+              <!-- END item product -->
             </tbody>
           </table>
         </div>
-        <!--<Pagination />-->
+        <!-- START pagination -->
+        <Pagination />
+        <!-- END pagination -->
 
-        <div v-if="deleted">
-          <div>
-            <div class="text-center">
-              <h4 class="text-2xl ">Please confirm</h4>
-              <p class="text-lg">
-                Please confirm that you want to delete product
-              </p>
-              <p>{{currentProduct.title}}</p>
-            </div>
-            <div class="flex flex-wrap mt-5 justify-center">
-              <div class="p-2 w-1/3">
-                <button class="btn-cancel" @click="noDeleted">No</button>
+        <!-- START model deleted -->
+        <div v-if="deleted" class="modal">
+          <div class="bg-white rounded-lg w-1/2">
+            <div class="flex flex-col items-start p-4">
+              <div class="modal-head">
+                <div class="text-gray-800 font-semibold py-4">
+                  Please confirm
+                </div>
               </div>
-              <div class="p-2 w-1/3">
-                <button
-                  class="btn-delete"
-                  @click="deletedProduct(currentProduct.id)"
-                >
-                  Yes
-                </button>
+              <div class="modal-body">
+                <p class="">Please confirm that you want to delete product</p>
+                <p class="font-bold text-center py-2">
+                  {{ currentProduct.title }}
+                </p>
+              </div>
+              <div class="modal-footer">
+                <div class="px-5">
+                  <button class="btn-cancel" @click="noDeleted">No</button>
+                </div>
+                <div class="">
+                  <button
+                    class="btn-delete"
+                    @click="deletedProduct(currentProduct.id)"
+                  >
+                    Yes
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <!-- END modal deleted-->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+// Import element Store ===========================
 import { mapGetters, mapActions } from "vuex";
+// Import components ==============================
+import IconPencil from "../icons/IconPencil";
+import IconDelete from "../icons/IconDelete";
+import IconSearch from "../icons/IconSearch";
+import Pagination from "../pagination/Pagination";
+
+// Export vue =====================================
 export default {
   name: "ProductList",
+  components: {Pagination, IconSearch, IconDelete, IconPencil },
   data() {
     return {
       currentProduct: null,
@@ -170,4 +194,89 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.btn {
+  &-logout {
+    @apply px-4 py-3 uppercase text-white font-semibold  bg-gray-700 rounded;
+    &:hover {
+      @apply bg-gray-600;
+    }
+  }
+  &-adding {
+    @apply shadow-md mr-2 bg-purple-700 text-white rounded-md cursor-pointer px-4 py-3 inline-flex items-center justify-center font-bold;
+    &:hover {
+      @apply bg-purple-600;
+    }
+  }
+  &-search {
+    @apply w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0 w-4 h-4 absolute my-auto inset-y-0 mr-3 right-0;
+  }
+  &-delete {
+    @apply w-full text-white px-6 py-3 mt-3 text-lg bg-red-500 transition-all duration-150 ease-linear rounded-lg shadow outline-none;
+    &:hover {
+      @apply bg-red-600 shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+  &-cancel {
+    @apply w-full px-6 py-3 mt-3 text-lg transition-all duration-150 ease-linear rounded-lg shadow outline-none;
+    &:hover {
+      @apply shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+}
+.txt {
+  &-edit {
+    @apply flex text-green-400 space-x-2;
+  }
+  &-delete {
+    @apply flex text-red-400 space-x-2;
+  }
+}
+.box-filter {
+  @apply inline-flex bg-white rounded-md px-4 py-3 shadow items-center ml-16 mr-20 space-x-4;
+}
+.form {
+  &-search {
+    @apply px-4 py-3 shadow rounded w-56 pr-10;
+  }
+}
+
+.table-product {
+  @apply table table-auto border-collapse w-full;
+  thead {
+    @apply bg-gray-100 tracking-wider rounded font-medium text-gray-900 text-sm;
+    th {
+      @apply whitespace-nowrap px-4 py-3;
+    }
+  }
+}
+
+td {
+  @apply px-4 py-3;
+}
+tr:nth-child(even) {
+  @apply bg-gray-100 bg-opacity-40;
+}
+.box-action {
+  @apply flex justify-center font-thin items-center space-x-5;
+}
+
+.modal {
+  @apply flex items-center justify-center fixed left-0 bottom-0 w-full h-full bg-gray-800 bg-opacity-50;
+  &-head {
+    @apply flex items-center w-full border-b border-gray-100 mb-4 text-2xl;
+  }
+  &-body {
+    @apply text-lg w-full space-y-4;
+  }
+  &-footer {
+    @apply ml-auto mb-4 flex;
+  }
+}
+</style>

@@ -113,6 +113,7 @@
       </div>
     </div>
 
+    <!-- START card submitted true -->
     <div v-else class="card">
       <div>
         <h4 class="text-2xl text-center">You submitted successfully !</h4>
@@ -123,26 +124,38 @@
         </div>
       </div>
     </div>
+    <!-- END card submitted true -->
 
-    <div v-if="deleted">
-      <div>
-        <div class="text-center">
-          <h4 class="text-2xl">Please confirm</h4>
-          <p class="text-lg">Please confirm that you want to delete product</p>
-          <p>{{ currentProduct.title }}</p>
-        </div>
-        <div class="flex flex-wrap mt-5 justify-center">
-          <div class="p-2 w-1/3">
-            <button class="btn-cancel" @click="noDeleted">No</button>
+    <!-- START model deleted -->
+    <div v-if="deleted" class="modal">
+      <div class="bg-white rounded-lg w-1/2">
+        <div class="flex flex-col items-start p-4">
+          <div class="modal-head">
+            <div class="text-gray-800 font-semibold py-4">Please confirm</div>
           </div>
-          <div class="p-2 w-1/3">
-            <button class="btn-save" @click="deletedProduct(currentProduct.id)">
-              Yes
-            </button>
+          <div class="modal-body">
+            <p class="">Please confirm that you want to delete product</p>
+            <p class="font-bold text-center py-2">
+              {{ currentProduct.title }}
+            </p>
+          </div>
+          <div class="modal-footer">
+            <div class="px-5">
+              <button class="btn-cancel" @click="noDeleted">No</button>
+            </div>
+            <div class="">
+              <button
+                class="btn-delete"
+                @click="deletedProduct(currentProduct.id)"
+              >
+                Yes
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <!-- END modal deleted-->
   </div>
 </template>
 
@@ -231,4 +244,88 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped lang="scss">
+.btn {
+  &-back {
+    @apply px-4 py-3 text-white font-semibold  bg-gray-700 rounded;
+    &:hover {
+      @apply bg-gray-600;
+    }
+  }
+  &-delete {
+    @apply w-full text-white px-6 py-3 mt-3 text-lg bg-red-500 transition-all duration-150 ease-linear rounded-lg shadow outline-none;
+    &:hover {
+      @apply bg-red-600 shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+  &-cancel {
+    @apply w-full px-6 py-3 mt-3 text-lg mr-5 transition-all duration-150 ease-linear rounded-lg shadow outline-none;
+    &:hover {
+      @apply shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+  &-save {
+    @apply w-full px-6 py-3 mt-3 text-lg text-white transition-all duration-150 ease-linear rounded-lg shadow outline-none bg-purple-500;
+    &:hover {
+      @apply bg-purple-600 shadow-lg;
+    }
+    &:focus {
+      @apply outline-none;
+    }
+  }
+}
+
+.card {
+  @apply w-1/2 bg-white shadow-xl p-10 rounded-md mx-auto mb-10;
+}
+
+.form {
+  &-label {
+    @apply leading-7 text-sm text-gray-600;
+  }
+  &-control {
+    @apply w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out;
+    &:focus {
+      @apply border-indigo-500 bg-white ring-2 ring-indigo-200;
+    }
+  }
+  &-select {
+    @apply w-full py-2 px-3 bg-gray-100 bg-opacity-50 rounded border border-gray-300 text-base outline-none text-gray-700  leading-8 transition-colors duration-200 ease-in-out;
+  }
+
+  &-group {
+    @apply flex items-center;
+    &-control {
+      @apply w-full py-1 px-3 bg-gray-100 rounded-tl rounded-bl text-base border outline-none text-gray-700 bg-opacity-50 leading-8 transition-colors duration-200 ease-in-out;
+      &:focus {
+        @apply border-indigo-500 bg-white ring-2 ring-indigo-200;
+      }
+    }
+    &-text {
+      @apply bg-gray-200 py-2 px-4 font-bold  border rounded-tr rounded-br;
+    }
+  }
+
+  .msg-error {
+    @apply text-sm text-red-600;
+  }
+}
+.modal {
+  @apply flex items-center justify-center fixed left-0 bottom-0 w-full h-full bg-gray-800 bg-opacity-50;
+  &-head {
+    @apply flex items-center w-full border-b border-gray-100 mb-4 text-2xl;
+  }
+  &-body {
+    @apply text-lg w-full space-y-4;
+  }
+  &-footer {
+    @apply ml-auto mb-4 flex;
+  }
+}
+</style>
