@@ -115,7 +115,7 @@
           </table>
         </div>
         <!-- START pagination -->
-        <!--        <Pagination />-->
+        <Pagination />
         <!-- END pagination -->
 
         <!-- START model deleted -->
@@ -158,17 +158,18 @@
 <script>
 // Import element Store ===========================
 import { mapState, mapGetters, mapActions } from "vuex";
+
 // Import components ==============================
 import IconPencil from "../icons/IconPencil";
 import IconDelete from "../icons/IconDelete";
 import IconSearch from "../icons/IconSearch";
-//import Pagination from "../pagination/Pagination";
+import Pagination from "../pagination/Pagination";
 
 // Export vue =====================================
 export default {
   name: "ProductList",
   components: {
-    //Pagination,
+    Pagination,
     IconSearch,
     IconDelete,
     IconPencil,
