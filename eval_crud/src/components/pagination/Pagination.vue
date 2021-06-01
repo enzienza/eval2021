@@ -2,48 +2,72 @@
   <div class="intro-y">
     <ul class="pagination">
       <li>
-        <a class="pagination__link" href="">
-          <IconChevronLeftDouble />
-        </a>
-      </li>
-      <li>
-        <a class="pagination__link" href="">
+        <a
+          class="pagination__link"
+          @click.prevent="previousPage"
+          :class="{ 'opacity-20': this.currentPage === 1 }"
+        >
           <IconChevronLeft />
         </a>
       </li>
-      <li><a class="pagination__link" href="">...</a></li>
-      <li><a class="pagination__link" href="">1</a></li>
-      <li><a class="pagination__link active" href="">2</a></li>
-      <li><a class="pagination__link" href="">3</a></li>
-      <li><a class="pagination__link" href="">...</a></li>
+      <li v-for="page in numberByPage" :key="page">
+        <a class="pagination__link" :class="{ active: page === currentPage }">
+          {{ page }}
+        </a>
+      </li>
       <li>
-        <a class="pagination__link" href="">
+        <a
+          class="pagination__link"
+          @click.prevent="nextPage"
+          :class="{ 'opacity-20': this.currentPage >= numberByPage - 1 }"
+        >
           <IconChevronRight />
         </a>
       </li>
-      <li>
-        <a class="pagination__link" href="">
-          <IconChevronRightDouble />
-        </a>
-      </li>
     </ul>
-    <select class="form-select">
-      <option>10</option>
-      <option>25</option>
-      <option>35</option>
-      <option>50</option>
-    </select>
   </div>
 </template>
 
 <script>
-import IconChevronLeftDouble from "../icons/IconChevronLeftDouble";
 import IconChevronLeft from "../icons/IconChevronLeft";
 import IconChevronRight from "../icons/IconChevronRight";
-import IconChevronRightDouble from "../icons/IconChevronRightDouble";
+import { mapGetters } from "vuex";
 export default {
   name: "Pagination",
-    components: {IconChevronRightDouble, IconChevronRight, IconChevronLeft, IconChevronLeftDouble},
+  components: {
+    IconChevronRight,
+    IconChevronLeft,
+  },
+  data() {
+    return {
+      currentPage: 1,
+      limited: 5,
+    };
+  },
+  computed: {
+    ...mapGetters(["allProducts"]),
+    numberByPage() {
+      let lengthProduct = this.allProducts.length;
+      let perPage = this.limited;
+      return Math.ceil(lengthProduct / perPage);
+    },
+  },
+  methods: {
+    previousPage() {
+      this.currentPage--;
+      if (this.currentPage <= 1) {
+        this.currentPage = 1;
+      }
+      this.$emit("previous", this.limited);
+    },
+    nextPage() {
+      this.currentPage++;
+      if (this.currentPage >= this.limited) {
+        this.currentPage = this.limited;
+      }
+      this.$emit("next", this.limited);
+    },
+  },
 };
 </script>
 

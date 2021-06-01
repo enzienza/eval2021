@@ -115,7 +115,7 @@
           </table>
         </div>
         <!-- START pagination -->
-        <Pagination />
+        <Pagination @next="nextProducts" @previous="previousProducts" />
         <!-- END pagination -->
 
         <!-- START model deleted -->
@@ -181,6 +181,10 @@ export default {
       search: "",
       sortBy: "",
       sortDirection: "desc",
+      limit: {
+        from: 0,
+        to: 5,
+      },
     };
   },
   computed: {
@@ -196,13 +200,16 @@ export default {
 
     // Order Asc / Desc ..................................
     sortedProducts() {
-      return this.filteredProducts.concat().sort((p1, p2) => {
-        let payload = 1;
-        if (this.sortDirection === "desc") payload = -1;
-        if (p1[this.sortBy] < p2[this.sortBy]) return -1 * payload;
-        if (p1[this.sortBy] > p2[this.sortBy]) return 1 * payload;
-        return 0;
-      });
+      return this.filteredProducts
+        .concat()
+        .sort((p1, p2) => {
+          let payload = 1;
+          if (this.sortDirection === "desc") payload = -1;
+          if (p1[this.sortBy] < p2[this.sortBy]) return -1 * payload;
+          if (p1[this.sortBy] > p2[this.sortBy]) return 1 * payload;
+          return 0;
+        })
+        .slice(this.limit.from, this.limit.to);
     },
   },
   methods: {
@@ -247,10 +254,24 @@ export default {
     },
 
     // Pagination ........................................
-    // clickPage(e) {
-    //   console.log("d", e);
-    //   this.$store.dispatch("fetchPages", e.target.value);
-    // },
+    nextProducts(numberByPage) {
+      if (this.limit.to < this.allProducts.length) {
+        this.limit = {
+          from: this.limit.from + numberByPage,
+          to: this.limit.to + numberByPage,
+        };
+        this.sortedProducts;
+      }
+    },
+    previousProducts(numberByPage) {
+      if (this.limit.from > 0) {
+        this.limit = {
+          from: this.limit.from - numberByPage,
+          to: this.limit.to - numberByPage,
+        };
+        this.sortedProducts;
+      }
+    },
 
     // Order Asc / Desc ..................................
     sort(s) {
