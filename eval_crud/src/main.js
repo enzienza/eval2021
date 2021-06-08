@@ -4,6 +4,7 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import Vuelidate from "vuelidate";
+import i18n from "./languages";
 Vue.use(Vuelidate);
 
 import "./assets/style/index.css"
@@ -11,6 +12,7 @@ import "./assets/style/index.css"
 Vue.config.productionTip = false;
 
 new Vue({
+  i18n,
   router,
   store,
   render: (h) => h(App),

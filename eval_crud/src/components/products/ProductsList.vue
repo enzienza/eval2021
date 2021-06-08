@@ -1,16 +1,18 @@
 <template>
   <div>
-    <div class="flex px-4 py-6 items-center justify-end">
-      <button class="btn-logout" @click="logout">Deconnection</button>
+    <div class="flex px-4 py-6 items-center justify-end space-x-8">
+      <button class="btn-logout" @click="logout">{{ $t("log.logout") }}</button>
     </div>
     <div>
       <div class="flex mb-6">
-        <h1 class="text-3xl tracking-wider font-bold">Product</h1>
+        <h1 class="text-3xl tracking-wider font-bold">
+          {{ $t("titlePage.productList") }}
+        </h1>
       </div>
       <div class="grid grid-cols-12 gap-6">
         <div class="col-span-12 flex flex-wrap items-center mt-2">
           <button class="btn-adding" @click="newProduct">
-            Add New Product
+            {{ $t("action.addProduct") }}
           </button>
 
           <div class="hidden md:block mx-auto text-gray-600">
@@ -31,7 +33,7 @@
           <div class="flex w-56 relative text-gray-700 dark:text-gray-300">
             <input
               type="text"
-              placeholder="Search..."
+              :placeholder="$t('action.search')"
               class="form-search"
               v-model="search"
             />
@@ -45,21 +47,21 @@
               <tr>
                 <th>Image</th>
                 <th @click="sort('title')">
-                  Product Name
+                  {{ $t("name.title") }}
                   <button
                     class="asc"
                     :class="[sortBy === 'title' ? sortDirection : 'desc']"
                   ></button>
                 </th>
                 <th @click="sort('price')">
-                  Price
+                  {{ $t("price.title") }}
                   <button
                     class="asc"
                     :class="[sortBy === 'price' ? sortDirection : 'desc']"
                   ></button>
                 </th>
                 <th @click="sort('category')">
-                  Category
+                  {{ $t("category.title") }}
                   <button
                     class="asc"
                     :class="[sortBy === 'category' ? sortDirection : 'desc']"
@@ -97,7 +99,7 @@
                         @click="setActiveProduct(product)"
                       >
                         <IconPencil />
-                        Edit
+                        {{ $t("action.edit") }}
                       </button>
                     </router-link>
                     <button
@@ -105,7 +107,7 @@
                       @click="setDeleteProduct(product)"
                     >
                       <IconDelete />
-                      Delete
+                      {{ $t("action.delete") }}
                     </button>
                   </div>
                 </td>
@@ -124,25 +126,27 @@
             <div class="flex flex-col items-start p-4">
               <div class="modal-head">
                 <div class="text-gray-800 font-semibold py-4">
-                  Please confirm
+                  {{ $t("modalDelete.titleModal") }}
                 </div>
               </div>
               <div class="modal-body">
-                <p class="">Please confirm that you want to delete product</p>
+                <p class="">{{ $t("modalDelete.msgModal") }}</p>
                 <p class="font-bold text-center py-2">
                   {{ currentProduct.title }}
                 </p>
               </div>
               <div class="modal-footer">
                 <div class="px-5">
-                  <button class="btn-cancel" @click="noDeleted">No</button>
+                  <button class="btn-cancel" @click="noDeleted">
+                    {{ $t("modalDelete.refuse") }}
+                  </button>
                 </div>
                 <div class="">
                   <button
                     class="btn-delete"
                     @click="deletedProduct(currentProduct.id)"
                   >
-                    Yes
+                    {{ $t("modalDelete.validate") }}
                   </button>
                 </div>
               </div>

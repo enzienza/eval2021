@@ -1,34 +1,38 @@
 <template>
   <div>
     <div class="flex px-4 py-6 items-center justify-end">
-      <button class="btn-back" @click="goBack">Back to List Products</button>
+      <button class="btn-back" @click="goBack">
+        {{ $t("action.goBack") }}
+      </button>
     </div>
 
     <div v-if="!submitted" class="card">
       <div class="flex mb-6">
-        <h1 class="text-3xl tracking-wider font-bold">Edit the product</h1>
+        <h1 class="text-3xl tracking-wider font-bold">
+          {{ $t("titlePage.editProduct") }}
+        </h1>
       </div>
       <div class="form text-left space-y-4">
         <div class="p-2 w-full">
-          <label class="form-label">Product Name</label>
+          <label class="form-label">{{ $t("name.title") }}</label>
           <input
             type="text"
             class="form-control"
             v-model="product.title"
-            placeholder="Enter product name"
+            :placeholder="$t('name.placeholder')"
             :class="{ 'is-invalid': isSubmitted && $v.product.title.$error }"
           />
           <span
             class="msg-error"
             v-if="isSubmitted && !$v.product.title.required"
           >
-            Title is required a minimum 2 length
+            {{ $t("msgError") }}
           </span>
         </div>
 
         <div class="flex flex-wrap">
           <div class="p-2 w-1/2">
-            <label class="form-label">Category</label>
+            <label class="form-label">{{ $t("category.title") }}</label>
             <p>{{ product.category }}</p>
             <select class="form-select">
               <option
@@ -42,13 +46,13 @@
           </div>
 
           <div class="p-2 w-1/2">
-            <label class="form-label">Price</label>
+            <label class="form-label">{{ $t("price.title") }}</label>
             <div class="form-group">
               <input
                 type="text"
                 class="form-group-control"
                 v-model="product.price"
-                placeholder="Enter product price"
+                :placeholder="$t('price.placeholder')"
                 :class="{
                   'is-invalid': isSubmitted && $v.product.price.$error,
                 }"
@@ -59,27 +63,27 @@
               class="msg-error"
               v-if="isSubmitted && !$v.product.price.minLenght"
             >
-              Price cannot be in negative
+              {{ $t("price.msgError") }}
             </span>
           </div>
         </div>
 
         <div class="p-2 w-full">
-          <label class="form-label">Image (url)</label>
+          <label class="form-label">{{ $t("image.title") }}</label>
           <input
             type="text"
             v-model="product.image"
             class="form-control"
-            placeholder="Enter product image url"
+            :placeholder="$t('image.placeholder')"
           />
         </div>
 
         <div class="p-2 w-full">
-          <label class="form-label">Description</label>
+          <label class="form-label">{{ $t("description.title") }}</label>
           <textarea
             class="form-control"
             v-model="product.description"
-            placeholder="Enter product description"
+            :placeholder="$t('description.placeholder')"
             :class="{
               'is-invalid': isSubmitted && $v.product.description.$error,
             }"
@@ -88,23 +92,27 @@
             class="msg-error"
             v-if="isSubmitted && !$v.product.description.maxLength"
           >
-            Description is required a maximum 200 length
+            {{ $t("description.msgError") }}
           </span>
         </div>
 
         <div class="flex flex-wrap mt-5 justify-between">
           <div>
             <button class="btn-delete" @click="setDeleteProduct(product)">
-              Delete
+              {{ $t("action.delete") }}
             </button>
           </div>
 
           <div class="flex justify-end">
             <div class="p-2 w-1/2">
-              <button class="btn-cancel" @click="goBack">Cancel</button>
+              <button class="btn-cancel" @click="goBack">
+                {{ $t("action.cancel") }}
+              </button>
             </div>
             <div class="p-2 w-1/2">
-              <button class="btn-save" @click="onSubmit">Save</button>
+              <button class="btn-save" @click="onSubmit">
+                {{ $t("action.save") }}
+              </button>
             </div>
           </div>
         </div>
@@ -129,24 +137,28 @@
       <div class="bg-white rounded-lg w-1/2">
         <div class="flex flex-col items-start p-4">
           <div class="modal-head">
-            <div class="text-gray-800 font-semibold py-4">Please confirm</div>
+            <div class="text-gray-800 font-semibold py-4">
+              {{ $t("modalDelete.titleModal") }}
+            </div>
           </div>
           <div class="modal-body">
-            <p class="">Please confirm that you want to delete product</p>
+            <p class="">{{ $t("modalDelete.msgModal") }}</p>
             <p class="font-bold text-center py-2">
               {{ currentProduct.title }}
             </p>
           </div>
           <div class="modal-footer">
             <div class="px-5">
-              <button class="btn-cancel" @click="noDeleted">No</button>
+              <button class="btn-cancel" @click="noDeleted">
+                {{ $t("modalDelete.refuse") }}
+              </button>
             </div>
             <div class="">
               <button
                 class="btn-delete"
                 @click="deletedProduct(currentProduct.id)"
               >
-                Yes
+                {{ $t("modalDelete.validate") }}
               </button>
             </div>
           </div>
